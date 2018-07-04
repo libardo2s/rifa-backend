@@ -1,0 +1,566 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Add Your favicon here -->
+    <!--<link rel="icon" href="img/favicon.ico">-->
+
+    <title>Resultados Rifas</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Animation CSS -->
+    <link href="{% static 'css/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'ruleta.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="col-lg-12 text-center centered shadow" style="text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);padding-top:8px;padding-bottom:8px;">
+    <h1 id="fecha_resultado" style="margin-top:0px;margin-bottom:0px;">RESULTADOS {{fecha}}</h1>
+    <button
+            type="button"
+            class="btn btn-outline btn-link"
+            style="color:#ffffff;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+            onclick="openModalFecha()">Otros resultados</button>
+    <!--
+    <form role="form" class="form-inline">
+        <div class="form-group">
+            <label class="sr-only">Fechas Sorteos</label>
+            <input type="date" class="form-control input-sm" onchange="cambiarFecha(event)">
+        </div>
+        <button class="btn btn-primary btn-sm" style="padding: 6px 12px;" type="button" onclick="buscarSorteo()">Buscar</button>
+    </form>
+    -->
+</div>
+<div id="part-2">
+    <div class="col-lg-12 text-center">
+        <img src="{% static 'img/parranda-logo.png' %}" width="320px" alt="" style="margin-top:10px;margin-bottom:10px;">
+    </div>
+    <div class="col-lg-12 text-center" style="color:#ffffff;">
+        {% if ultimo_sorteo_parranda %}
+            <strong>
+                <div class="m-b-md">
+                    {% if imagen_parranda %}
+                    <img id="img-ganadora-parranda" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen_parranda.image}}" height="128" width="128" style="margin-bottom:5px;">
+                    {% endif %}
+                    <h1 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-parranda">{{ultimo_sorteo_parranda.numero_ganador}}</strong></h1>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-parranda">{{ultimo_sorteo_parranda.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% else%}
+            <strong>
+                <div class="m-b-md">
+                    <img id="img-ganadora-parranda" class="img-thumbnail" src="http://atlasrifa.webfactional.com/static/img/hourglass.png" height="128" width="128" style="margin-bottom:5px;">
+                    <h3 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-parranda">A la espera de sorteo</strong></h3>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-parranda">{{ultimo_sorteo_parranda.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% endif %}
+    </div>
+    <div class="col-lg-12 text-center">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-11 text-center top">
+            <div class="row">
+                {% for sorteo in sorteo_dia%}
+                    {% if sorteo.rifa == 'Parranda de la suerte' %}
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;color:#ffffff;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                {% if hora < horario.sorteoHoras.hora_sorteo %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        -
+                                    </h1>
+                                {% else %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        {{horario.numero_ganador}}
+                                    </h1>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<div id="part-1">
+    <div class="col-lg-12 text-center">
+        <img src="{% static 'img/animaloto_logo.png' %}" width="235px" alt="" style="margin-top:10px;margin-bottom:10px;">
+    </div>
+    <div class="col-lg-12 text-center" style="color:#ffffff;">
+        {% if ultimo_sorteo_animaloto %}
+            <strong>
+                <div class="m-b-md">
+                    {% if imagen_animalto %}
+                    <img id="img-ganadora-animaloto" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen_animalto.image}}" height="128" width="128" style="margin-bottom:5px;">
+                    {% endif %}
+                    <h1 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-animaloto">{{ultimo_sorteo_animaloto.numero_ganador}}</strong></h1>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-animaloto">{{ultimo_sorteo_animaloto.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% else%}
+            <strong>
+                <div class="m-b-md">
+                    <img id="img-ganadora-animaloto" class="img-thumbnail" src="http://atlasrifa.webfactional.com/static/img/hourglass.png" height="128" width="128" style="margin-bottom:5px;">
+                    <h3 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-animaloto">A la espera de sorteo</strong></h3>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-animaloto">{{ultimo_sorteo_animaloto.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% endif %}
+    </div>
+    <div class="col-lg-12 text-center">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-11 text-center top">
+            <div class="row">
+                {% for sorteo in sorteo_dia%}
+                    {% if sorteo.rifa == 'Animaloto' %}
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;color:#ffffff;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                {% if hora < horario.sorteoHoras.hora_sorteo %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        -
+                                    </h1>
+                                {% else %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        {{horario.numero_ganador}}
+                                    </h1>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<div id="part-3">
+    <div class="col-lg-12 text-center">
+        <img src="{% static 'img/liga-logo-2.png' %}" width="320px" alt="" style="margin-top:10px;margin-bottom:10px;">
+    </div>
+    <div class="col-lg-12 text-center" style="color:#ffffff;">
+        {% if ultimo_sorteo_liga %}
+            <strong>
+                <div class="m-b-md">
+                    {% if imagen_liga %}
+                    <img id="img-ganadora-liga" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen_liga.image}}" height="128" width="128" style="margin-bottom:5px;">
+                    {% endif %}
+                    <h1 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-liga">{{ultimo_sorteo_liga.numero_ganador}}</strong></h1>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-liga">{{ultimo_sorteo_liga.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% else%}
+            <strong>
+                <div class="m-b-md">
+                    <img id="img-ganadora-liga" class="img-thumbnail" src="http://atlasrifa.webfactional.com/static/img/hourglass.png" height="128" width="128" style="margin-bottom:5px;">
+                    <h3 style="margin-top:0px;margin-bottom:0px;font-size:270%;"><strong id="numero-ganador-liga">A la espera de sorteo</strong></h3>
+                    <h1 style="margin-top:0px;margin-bottom:5px;font-size:160%;" id="rifa-sorteo-liga">{{ultimo_sorteo_liga.sorteoHoras}}</h1>
+                </div>
+            </strong>
+        {% endif %}
+    </div>
+    <div class="col-lg-12 text-center">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-11 text-center top">
+            <div class="row">
+                {% for sorteo in sorteo_dia%}
+                    {% if sorteo.rifa == 'Liga de la fortuna' %}
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;color:#ffffff;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                {% if hora < horario.sorteoHoras.hora_sorteo %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        -
+                                    </h1>
+                                {% else %}
+                                    <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}"
+                                        class="no-margins">
+                                        {{horario.numero_ganador}}
+                                    </h1>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<div class="col-lg-12" style="min-height:100%;max-height:100%;padding-right:0px;padding-left:0px;">
+    <div class="col-lg-12 text-center centered" style="text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);padding-top:10px;padding-bottom:10px;"><h1>RESULTADOS {{fecha}}</h1></div>
+    {% for sorteo in sorteo_dia %}
+        {% if sorteo.rifa == 'Animaloto' %}
+            <div id="Animaloto" class="col-lg-4 animaloto-bg text-center shadow-div" style="height:100%;padding-bottom10px;">
+                <img src="{% static 'img/animaloto_logo.png' %}" width="235px" alt="" style="margin-top:10px;margin-bottom:10px;">
+                <div class="col-lg-12 text-center" style="color:#ffffff;">
+                    {% if ultimo_sorteo %}
+                        <strong>
+                            <div class="m-b-md">
+                                {% if imagen %}
+                                <img id="img-ganadora-animaloto" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen.image}}" height="128" width="128" style="margin-bottom:5px;">
+                                {% endif %}
+                                <h1 style="margin-top:0px;margin-bottom:0px;font-size:250%;"><strong id="numero-ganador-animaloto">{{ultimo_sorteo.numero_ganador}}</strong></h1>
+                                <h1 style="margin-top:0px;margin-bottom:5px;font-size:200%;" id="rifa-sorteo-animaloto">ultimo resultado</h1>
+                            </div>
+                        </strong>
+                    {% else%}
+                        <strong>
+                            <h4>A la espera de sorteo</h4>
+                        </strong>
+                    {% endif %}
+                </div>
+                <div class="col-lg-12 text-center"
+                     style="margin-top:20%;color:#ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;">
+                    <div class="row" style="width:100%;height;100%;margin-left:8%;margin-bottom:30px;color:#ffffff;">
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}" class="no-margins">
+                                    {{horario.numero_ganador}}
+                                </h1>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% elif sorteo.rifa == 'Parranda de la suerte' %}
+            <div id="Parranda de la suerte" class="col-lg-4 parranda-bg text-center shadow-div" style="height:100%;">
+                <img src="{% static 'img/parranda-logo.png' %}" width="320px" alt="" style="margin-top:10px;margin-bottom:10px;">
+                <div class="col-lg-12 text-center" style="color:#ffffff;">
+                    {% if ultimo_sorteo %}
+                        <strong>
+                            <div class="m-b-md">
+                                {% if imagen %}
+                                <img id="img-ganadora-parranda" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen.image}}" height="128" width="128" style="margin-bottom:5px;">
+                                {% endif %}
+                                <h1 style="margin-top:0px;margin-bottom:0px;font-size:250%;"><strong id="numero-ganador-parranda">{{ultimo_sorteo.numero_ganador}}</strong></h1>
+                                <h1 style="margin-top:0px;margin-bottom:5px;font-size:200%;" id="rifa-sorteo-parranda">ultimo resultado</h1>
+                            </div>
+                        </strong>
+                    {% else%}
+                        <strong>
+                            <h4>A la espera de sorteo</h4>
+                        </strong>
+                    {% endif %}
+                </div>
+                <div class="col-lg-12 text-center"
+                     style="margin-top:20%;color:#ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;">
+                    <div class="row" style="width:100%;height;100%;margin-left:8%;margin-bottom:30px;color:#ffffff;">
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}" class="no-margins">
+                                    {{horario.numero_ganador}}
+                                </h1>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% elif sorteo.rifa == 'Liga de la fortuna' %}
+            <div id="Liga de la fortuna" class="col-lg-4 liga-bg  text-center" style="height:100%;width:32%;">
+                <img src="{% static 'img/liga-logo-2.png' %}" width="320px" alt="" style="margin-top:10px;margin-bottom:10px;">
+                <div class="col-lg-12 text-center" style="color:#ffffff;">
+                    {% if ultimo_sorteo %}
+                        <strong>
+                            <div class="m-b-md">
+                                {% if imagen %}
+                                <img id="img-ganadora-liga" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen.image}}" height="128" width="128" style="margin-bottom:5px;">
+                                {% endif %}
+                                <h1 style="margin-top:0px;margin-bottom:0px;font-size:250%;"><strong id="numero-ganador-liga">{{ultimo_sorteo.numero_ganador}}</strong></h1>
+                                <h1 style="margin-top:0px;margin-bottom:5px;font-size:200%;" id="rifa-sorteo-liga">ultimo resultado</h1>
+                            </div>
+                        </strong>
+                    {% else%}
+                        <strong>
+                            <h4>A la espera de sorteo</h4>
+                        </strong>
+                    {% endif %}
+                </div>
+                <div class="col-lg-12 text-center"
+                     style="margin-top:20%;color:#ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;">
+                    <div class="row" style="width:100%;height;100%;margin-left:8%;margin-bottom:30px;color:#ffffff;">
+                        {% for horario in sorteo.elementos%}
+                            <div class="col-lg-2" style="border: 7px solid #ffffff;margin-left:auto;position: relative;min-height: 1px;padding-right: 1px;padding-left: 1px;margin:2px;">
+                                <h4 style="font-size: 120%;">{{horario.sorteoHoras.hora_sorteo}}</h4>
+                                <h1
+                                        style="color:#ffca07; margin-top: 0px;margin-bottom: 0px;font-size: 300%;text-shadow: 0px -2px 3px rgba(0, 0, 0, 1);"
+                                        id="{{horario.sorteoHoras.id}}" class="no-margins">
+                                    {{horario.numero_ganador}}
+                                </h1>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor%}
+</div>
+-->
+<div class="modal inmodal fade in"
+     id="modal-ruleta" tabindex="-1"
+     role="dialog" aria-hidden="true"
+     style="display: block; padding-right: 50px; padding-left: 50px;">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: transparent;box-shadow: 0 5px 15px rgba(0, 0, 0, 0);border: 0px solid rgba(0, 0, 0, 0);">
+            <div class="modal-body">
+                <div class="wrapper">
+                    <div class="roulette">
+                        <canvas id="wheelcanvas" width="543" height="656"></canvas>
+                        <div id="roulette_arrow">&nbsp;</div>
+                        <div id="roulette_axis">&nbsp;</div>
+                        <div id="imagenes" class="hidden">
+                            <img src="{% static 'img/numero-uno.png'%}" id="0" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="1" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="2" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="3" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="4" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="5" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="6" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="7" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="8" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="9" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="10" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="11" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="12" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="13" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="14" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="15" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="16" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="17" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="18" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="19" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="20" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="21" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="22" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="23" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="24" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="25" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="26" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="27" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="28" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="29" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="30" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="31" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="32" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="33" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="34" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="35" alt="tena" class="provider" width="30px" height="30px"/>
+                            <img src="{% static 'img/numero-uno.png'%}" id="36" alt="tena" class="provider" width="30px" height="30px"/>
+                        </div>
+                    </div>
+                    <div class="text-center" style="margin-top:30px;">
+                        <h3 style="color:white;"><strong>Número ganador:</strong></h3>
+                        <strong><h3 id="numero-ganador-modal" style="color:white;font-size: 200%;" ></h3></strong>
+                        <img id="zoom-image" style="width: 100px" />
+                        
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade in"
+        id="modal-fecha" tabindex="-1"
+        role="dialog"
+        aria-hidden="true"
+        style="display: block; padding-right: 30px;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="margin-top:200px;">
+            <div class="modal-header" style="background:#ffffff;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Seleccione una fecha</h4>
+            </div>
+            <div class="modal-body" style="background:#f8fafb;">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form" class="form">
+                            <div class="form-group">
+                                <label class="sr-only">Fechas Sorteos</label>
+                                <input type="date" class="form-control input-sm" onchange="cambiarFecha(event)">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-12">
+                        <button class="btn btn-primary btn-sm" style="padding: 6px 12px;" type="button" onclick="buscarSorteo()">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade in"
+     id="modal-loading"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="margin-top:40%;">
+            <div class="loader"  style="margin-top:120%;"></div>
+        </div>
+    </div>
+</div>
+<!--
+<div class="modal inmodal fade in"
+     id="modal-fecha" tabindex="-1"
+     role="dialog" aria-hidden="true"
+     style="display: block; padding-right: 50px; padding-left: 50px;">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: transparent;box-shadow: 0 5px 15px rgba(0, 0, 0, 0);border: 0px solid rgba(0, 0, 0, 0);">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form role="form" class="form-inline">
+                            <div class="form-group">
+                                <label class="sr-only">Fechas Sorteos</label>
+                                <input type="date" class="form-control input-sm" onchange="cambiarFecha(event)">
+                            </div>
+                            <button class="btn btn-primary btn-sm" style="padding: 6px 12px;" type="button" onclick="buscarSorteo()">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+<!--
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="javascripr:;">LA PARRANDA DE LA SUERTE</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container features" style="margin-top:30px;">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="navy-line"></div>
+            <h1><strong>Ultimo Resultado</strong>
+                <br/>
+                <span class="navy">
+                    {% if ultimo_sorteo %}
+                        <strong>
+                            <h4 id="rifa-sorteo">{{ultimo_sorteo.rifa.nombre_rifa}} {{ultimo_sorteo.sorteoHoras.hora_sorteo}}</h4>
+                            <div class="m-b-md">
+                                {% if imagen %}
+                                <img id="img-ganadora" class="img-thumbnail" src="http://atlasrifa.webfactional.com/media/{{imagen.image}}" height="128" width="128">
+                                {% endif %}
+                                <h1>
+                                    <strong id="numero-ganador">{{ultimo_sorteo.numero_ganador}}</strong>
+                                </h1>
+                            </div>
+                        </strong>
+                    {% else%}
+                        <strong>
+                            <h4>A la espera de sorteo</h4>
+                        </strong>
+                    {% endif %}
+                </span>
+            </h1>
+        </div>
+        <div class="col-lg-12 text-center" style="margin-bottom:20px;">
+            <div class="ibox-content">
+                <form role="form" class="form-inline">
+                    <label>Buscar otros sorteos</label>
+                    <br>
+                    <div class="form-group">
+                        <label class="sr-only">Fechas Sorteos</label>
+                        <input type="date" class="form-control" onchange="cambiarFecha(event)">
+                    </div>
+                    <button class="btn btn-primary" style="padding: 6px 12px;" type="button" onclick="buscarSorteo()">Buscar</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-12 text-center">
+            <h1 id="fecha_resultado" style="font-weight: bold;">Resultados {{fecha}}</h1>
+            <br>
+        </div>
+        {% for sorteo in sorteo_dia %}
+            <div id="{{sorteo.rifa}}" class="col-lg-12 text-center" style="padding-buttom: 20px;">
+                {% if sorteo.rifa == 'Animaloto' %}
+                    <img src="{% static 'img/animaloto_logo.png' %}" width="320px" alt="">
+                {% elif sorteo.rifa == 'Parranda de la suerte' %}
+                    <img src="{% static 'img/parranda-logo.png' %}" width="320px" alt="">
+                {% elif sorteo.rifa == 'Liga de la fortuna' %}
+                    <img src="{% static 'img/liga-logo-2.png' %}" width="320px" alt="">
+                {% endif %}
+                <div class="col-lg-12 text-center">
+                    {% for horario in sorteo.elementos%}
+                        <div class="col-lg-2" style="border-style: dotted;">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h4><strong>{{horario.sorteoHoras.hora_sorteo}}</strong></h4>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="m-b-md">
+                                        <h3 id="{{horario.sorteoHoras.id}}" class="no-margins">{{horario.numero_ganador}}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor%}
+    </div>
+</div>
+-->
+<script src="{% static 'js/jquery-2.1.1.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/classie.js' %}"></script>
+<script src="{% static 'js/cbpAnimatedHeader.js' %}"></script>
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script src="{% static 'js/inspinia.js' %}"></script>
+<script src="{% static 'jquery.preload.min.js' %}"></script>
+<script src="{% static 'ruleta.js' %}"></script>
+<script src="{% static 'socket_conection.js' %}"></script>
+</body>
+</html>
